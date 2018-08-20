@@ -23,18 +23,25 @@ np.random.seed(seed)
 
 
 prefix = '/opt/ml/'
-#model_path = os.path.join(prefix, 'model')
+input_path = prefix + 'input/data'
+output_path = os.path.join(prefix, 'output')
+model_path = os.path.join(prefix, 'model')
+param_path = os.path.join(prefix, 'input/config/hyperparameters.json')
 
 
 #load data from s3
 #bucket_name = 'iris-docker-data'
 #s3 = boto3.client('s3')
 #obj = s3.get_object(Bucket=bucket_name, Key='iris.csv')
-dataframe = pd.read_csv('iris.csv')
+#dataframe = pd.read_csv('iris.csv')
 
+# This algorithm has a single channel of input data called 'training'. Since we run in
+# File mode, the input files are copied to the directory specified here.
+channel_name='training'
+training_path = os.path.join(input_path, channel_name)
 
-# In[3]:
-
+input_files = [ os.path.join(training_path, file) for file in os.listdir(training_path) ]
+dataset = [ pd.read_csv(file) for file in input_files ]
 
 dataset = dataframe.values
 X = dataset[:,0:4].astype(float)
@@ -52,8 +59,6 @@ encoded_Y = encoder.transform(Y)
 dummy_y = np_utils.to_categorical(encoded_Y)
 
 
-# In[10]:
-
 
 # define baseline model
 def iris_model():
@@ -64,20 +69,16 @@ def iris_model():
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.fit(X, dummy_y, epochs=200, batch_size=5, verbose=0, shuffle=True)
-    model.save('iris_model.h5')
+    model.save('/opt/ml/model/iris_model.h5')
     return model
-
-
-# In[11]:
 
 
 iris_model()
 
+if __name__ == '__main__':
+    iris_model()
 
-# In[34]:
+    # A zero exit code causes the job to be marked a Succeeded.
+    sys.exit(0)
 
-
-from keras.models import load_model
-model = load_model('iris_model.h5')
-print(moddel.predict(X))
 
