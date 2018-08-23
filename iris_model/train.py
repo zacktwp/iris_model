@@ -1,9 +1,4 @@
 
-# coding: utf-8
-
-# In[1]:
-
-
 # Multiclass Classification with the Iris Flowers Dataset
 import numpy as np
 import pandas as pd
@@ -27,13 +22,6 @@ input_path = prefix + 'input/data'
 output_path = os.path.join(prefix, 'output')
 model_path = os.path.join(prefix, 'model')
 param_path = os.path.join(prefix, 'input/config/hyperparameters.json')
-
-
-#load data from s3
-#bucket_name = 'iris-docker-data'
-#s3 = boto3.client('s3')
-#obj = s3.get_object(Bucket=bucket_name, Key='iris.csv')
-#dataframe = pd.read_csv('iris.csv')
 
 # This algorithm has a single channel of input data called 'training'. Since we run in
 # File mode, the input files are copied to the directory specified here.
@@ -63,6 +51,7 @@ def train():
     # Compile model
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.fit(X, dummy_y, epochs=200, batch_size=5, verbose=0, shuffle=True)
+    print('Training complete.')
     model.save('/opt/ml/model/iris_model.h5')
     return model
 
