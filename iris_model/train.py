@@ -40,28 +40,22 @@ param_path = os.path.join(prefix, 'input/config/hyperparameters.json')
 channel_name='training'
 training_path = os.path.join(input_path, channel_name)
 
-input_files = [ os.path.join(training_path, file) for file in os.listdir(training_path) ]
-dataset = [ pd.read_csv(file) for file in input_files ]
-
-dataset = dataframe.values
-X = dataset[:,0:4].astype(float)
-Y = dataset[:,4]
-
-
-# In[4]:
-
-
-# encode class values as integers
-encoder = LabelEncoder()
-encoder.fit(Y)
-encoded_Y = encoder.transform(Y)
-# convert integers to dummy variables (i.e. one hot encoded)
-dummy_y = np_utils.to_categorical(encoded_Y)
-
-
-
 # define baseline model
 def train():
+    input_files = [ os.path.join(training_path, file) for file in os.listdir(training_path) ]
+    dataset = [ pd.read_csv(file) for file in input_files ]
+
+    dataset = dataframe.values
+    X = dataset[:,0:4].astype(float)
+    Y = dataset[:,4]
+
+    # encode class values as integers
+    encoder = LabelEncoder()
+    encoder.fit(Y)
+    encoded_Y = encoder.transform(Y)
+    # convert integers to dummy variables (i.e. one hot encoded)
+    dummy_y = np_utils.to_categorical(encoded_Y)
+    
     # create model
     model = Sequential()
     model.add(Dense(8, input_dim=4, activation='relu'))
@@ -72,8 +66,6 @@ def train():
     model.save('/opt/ml/model/iris_model.h5')
     return model
 
-
-train()
 
 if __name__ == '__main__':
     train()
