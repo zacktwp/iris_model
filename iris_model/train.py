@@ -13,7 +13,7 @@ from sklearn.model_selection import KFold
 from sklearn.preprocessing import LabelEncoder
 #import boto3
 #import s3fs
-#import os
+import os
 # fix random seed for reproducibility
 seed = 7
 np.random.seed(seed)
