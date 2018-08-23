@@ -39,6 +39,7 @@ training_path = os.path.join(input_path, channel_name)
 
 input_files = [ os.path.join(training_path, file) for file in os.listdir(training_path) ]
 dataset = [ pd.read_csv(file) for file in input_files ]
+dataset = pd.concat(dataset)
 
 dataset = dataset.values
 X = dataset[:,0:4].astype(float)
