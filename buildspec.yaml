@@ -1,0 +1,19 @@
+phases:
+  install:
+    commands:
+       - pip install boto3 --user
+       - pip install numpy --user
+       - pip install pandas --user
+       - pip install sagemaker --user
+  pre_build:
+    commands:
+       - $(aws ecr get-login --region us-east-1 --no-include-email)
+       - chmod +x iris_model/train
+  build:
+    commands:
+       - docker build -t iris .
+       - docker tag iris 532109487980.dkr.ecr.us-east-1.amazonaws.com/iris:latest
+  post_build:
+    commands:
+       - docker push 532109487980.dkr.ecr.us-east-1.amazonaws.com/iris:latest
+       - python3 sagemaker-run-byoc.py
