@@ -2,10 +2,10 @@
 # This is a Python 2 image that uses the nginx, gunicorn, flask stack
 # for serving inferences in a stable way.
 
-FROM ubuntu:16.04
+#FROM ubuntu:16.04
 
-MAINTAINER Amazon AI <sage-learner@amazon.com>
-
+#MAINTAINER Amazon AI <sage-learner@amazon.com>
+FROM nvidia/cuda:9.2-runtime
 
 RUN apt-get -y update && apt-get install -y --no-install-recommends \
          wget \
